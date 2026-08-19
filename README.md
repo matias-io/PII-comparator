@@ -1,14 +1,15 @@
-# PII redaction comparison
+# PII redaction comparator
 
-A deliberately small evaluator for running the same text through two
-PII-redaction strategies:
+A focused evaluator for comparing two PII detection and redaction providers:
 
 - **Limina Process Text** through the hosted Community API.
-- **Microsoft Presidio** through pinned, self-hosted analyzer and anonymizer
-  containers.
+- **Microsoft Presidio** through a self-hosted Python service.
 
-The page keeps each provider's native output, entity labels, confidence scores,
-latency, and API/runtime details visible.
+Users can run either provider independently or run both concurrently. The page
+keeps provider-native output, entity labels, confidence scores, latency, and
+runtime details visible. It is an evaluation POC, not a compliance product.
+
+Live evaluation: [limina-comparator.matiass.ca](https://limina-comparator.matiass.ca/)
 
 ## Architecture
 
@@ -20,9 +21,14 @@ Browser
             └─ Presidio anonymizer: POST /anonymize
 ```
 
-The browser never receives the Limina API key. In production, the two Presidio
-containers are private Vercel Services reached through service bindings; only
-the Next.js service is publicly routed.
+The browser never receives the Limina API key. The server calls only the
+providers selected for a request. In production, Presidio runs as one private
+Python/FastAPI Vercel Service. The public Next.js service reaches it through two
+private bindings for the analyzer and anonymizer endpoints.
+
+Local development uses the official Presidio analyzer and anonymizer container
+images pinned to version `2.2.364`. Production uses the matching Python packages
+and `en_core_web_lg` model in `services/presidio-vercel/`.
 
 ## Run locally
 
@@ -57,27 +63,36 @@ Get a key from the [Limina portal](https://portal.getlimina.ai/). Keep it only
 in `web/.env.local` or a deployment secret; never commit it or prefix it with
 `NEXT_PUBLIC_`.
 
-## Run Production - Deploy to Vercel
+## Deploy to Vercel
 
-This repository uses the current Vercel Services configuration in
-`vercel.json`:
+The root `vercel.json` declares two Vercel Services:
 
-1. Create/import a Vercel project from this repository and select **Services**
-   as the project framework.
+- `web`, the public Next.js application.
+- `presidio`, the private native Python/FastAPI service.
+
+To deploy:
+
+1. Import the repository root into Vercel and select **Services** as the project
+   framework.
 2. Add `LIMINA_API_KEY` as a server-only encrypted environment variable.
-3. Add `PORT=3000` for the Presidio containers. `LIMINA_API_BASE_URL` is
-   optional and defaults to `https://api.getlimina.ai/community/v4`.
-4. Deploy. Do not add public rewrites for either Presidio service.
+3. Set `NEXT_PUBLIC_ENVIRONMENT_LABEL=development-live` so technical details
+   describe the Vercel deployment rather than the local Docker setup.
+4. Keep Fluid Compute and `VERCEL_SUPPORT_LARGE_FUNCTIONS=1` enabled because the
+   spaCy model exceeds the standard function bundle path.
+5. Do not set `PRESIDIO_ANALYZER_URL` or `PRESIDIO_ANONYMIZER_URL` manually in
+   Vercel. Private service bindings supply both values.
 
-The deployment uses Presidio `2.2.364` official images, pinned by both version
-and digest, and the default `en_core_web_lg` English spaCy model. Vercel Services
-and container-image Functions are current Vercel beta capabilities, so verify
-cold-start time and memory use in the target account before treating this as a
-production architecture.
+Vercel Services and the Python runtime are beta capabilities as of August 2026.
+The verified deployment uses Presidio `2.2.364` and spaCy
+`en_core_web_lg 3.8.0`.
 
 ## Evaluation notes
 
 - The app has no user authentication
+- Input and provider responses use `Cache-Control: no-store` and must not be
+  logged or sent to analytics.
+- Use synthetic data only. The included sample is synthetic and contains test
+  identifiers intended to exercise many detector types.
 - Limina uses numbered marker replacements such as
   `[UNIQUE_1_PERSON]`; Presidio uses typed placeholders such as `<PERSON>`.
   The visible outputs therefore preserve each strategy's native semantics.
@@ -89,4 +104,4 @@ production architecture.
 - [Presidio installation and containers](https://presidio.dataprivacystack.org/installation/)
 - [Presidio REST API](https://presidio.dataprivacystack.org/api-docs/api-docs.html)
 - [Vercel Services](https://vercel.com/kb/guide/vercel-services)
-- [Vercel Dockerfile Functions](https://vercel.com/changelog/bring-your-dockerfile-to-vercel-functions)
+- [FastAPI on Vercel](https://vercel.com/kb/guide/ship-a-fastapi-app-on-vercel)

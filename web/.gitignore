@@ -19,6 +19,7 @@ out/
 .DS_Store
 Thumbs.db
 coverage/
+*.tsbuildinfo
 
 # Editors
 .idea/
