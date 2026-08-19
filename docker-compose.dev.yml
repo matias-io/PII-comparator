@@ -1,0 +1,18 @@
+name: pii-redaction-compare-dev
+
+services:
+  presidio-analyzer:
+    image: ghcr.io/data-privacy-stack/presidio-analyzer:2.2.364@sha256:ae8f6f111ac2f04e3fec552f7f80edd0dcbfa2dd69ee1b9e030475be31669885
+    environment:
+      PORT: "3000"
+    ports:
+      - "5002:3000"
+    restart: unless-stopped
+
+  presidio-anonymizer:
+    image: ghcr.io/data-privacy-stack/presidio-anonymizer:2.2.364@sha256:e567013893ebc80994e3799f6f55c86aa1f0b0fadb779571ab346f0ec45365c1
+    environment:
+      PORT: "3000"
+    ports:
+      - "5001:3000"
+    restart: unless-stopped

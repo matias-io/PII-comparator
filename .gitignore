@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+!web/.env.example
+
+# Vercel
+.vercel/
+
+# Logs and local artifacts
+*.log
+.DS_Store
+Thumbs.db
+coverage/
+
+# Editors
+.idea/
+.vscode/
+
+
+AGENTS.md
+CLAUDE.md

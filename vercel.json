@@ -1,0 +1,39 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "web": {
+      "root": "web/",
+      "framework": "nextjs",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "presidio_analyzer",
+          "format": "url",
+          "env": "PRESIDIO_ANALYZER_URL"
+        },
+        {
+          "type": "service",
+          "service": "presidio_anonymizer",
+          "format": "url",
+          "env": "PRESIDIO_ANONYMIZER_URL"
+        }
+      ]
+    },
+    "presidio_analyzer": {
+      "root": "services/presidio-analyzer/",
+      "entrypoint": "Dockerfile.vercel"
+    },
+    "presidio_anonymizer": {
+      "root": "services/presidio-anonymizer/",
+      "entrypoint": "Dockerfile.vercel"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "web"
+      }
+    }
+  ]
+}
