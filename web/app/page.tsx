@@ -19,9 +19,8 @@ export default function HomePage() {
         <footer className="site-footer">
           <p>
             {/* The environment label defaults to DEV ENV if unset */}
-            {process.env.NEXT_PUBLIC_ENVIRONMENT_LABEL ??
-              `development ` +
-                `(proxy: ${process.env.NEXT_PUBLIC_PROXY_URL ?? "n/a"})`}
+            {process.env.NEXT_PUBLIC_ENVIRONMENT_LABEL ?? `development`}
+            {` (proxy: ${process.env.NEXT_PUBLIC_PROXY_URL ?? "n/a"})`}
           </p>
         </footer>
       </div>
