@@ -21,10 +21,12 @@
     },
     "presidio_analyzer": {
       "root": "services/presidio-analyzer/",
+      "runtime": "container",
       "entrypoint": "Dockerfile.vercel"
     },
     "presidio_anonymizer": {
       "root": "services/presidio-anonymizer/",
+      "runtime": "container",
       "entrypoint": "Dockerfile.vercel"
     }
   },
