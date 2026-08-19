@@ -54,6 +54,11 @@ textarea:focus-visible {
   outline-offset: 3px;
 }
 
+.provider-option input:focus-visible + span {
+  outline: 3px solid rgba(45, 103, 228, 0.26);
+  outline-offset: 3px;
+}
+
 .site-header {
   width: min(1180px, calc(100% - 40px));
   height: 76px;
@@ -176,6 +181,62 @@ textarea:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
+.provider-selectors {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 15px;
+  padding: 0;
+  border: 0;
+}
+
+.provider-selectors legend {
+  float: left;
+  margin-right: 4px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 680;
+}
+
+.provider-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.provider-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.provider-option span {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 680;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.provider-option input:checked + span {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: white;
+}
+
+.provider-option input:disabled + span {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
 textarea {
   display: block;
   width: 100%;
@@ -293,27 +354,12 @@ textarea:focus {
 .provider-label {
   display: flex;
   align-items: center;
-  gap: 8px;
   margin-bottom: 6px;
   color: var(--muted);
   font-size: 0.7rem;
   font-weight: 710;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.provider-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
-
-.provider-limina .provider-dot {
-  background: var(--limina);
-}
-
-.provider-presidio .provider-dot {
-  background: var(--presidio);
 }
 
 .provider-heading h2 {
@@ -629,6 +675,16 @@ tbody tr:last-child td {
 
   .input-panel {
     padding: 18px;
+  }
+
+  .provider-selectors {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .provider-selectors legend {
+    width: 100%;
+    margin: 0 0 2px;
   }
 
   .input-actions {

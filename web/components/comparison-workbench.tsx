@@ -19,6 +19,7 @@ const providerNames: Record<ProviderId, string> = {
   limina: "Limina",
   presidio: "Presidio",
 };
+const providerIds: ProviderId[] = ["limina", "presidio"];
 
 function formatScore(score: number | null): string {
   if (score === null) {
@@ -88,10 +89,12 @@ function ProviderCard({
   provider,
   outcome,
   loading,
+  selected,
 }: {
   provider: ProviderId;
   outcome: ProviderOutcome | null;
   loading: boolean;
+  selected: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const name = providerNames[provider];
@@ -114,7 +117,6 @@ function ProviderCard({
       <div className="provider-heading">
         <div>
           <div className="provider-label">
-            <span className="provider-dot" aria-hidden="true" />
             {provider === "limina"
               ? "Managed API | Can run locally (Licensed)"
               : "Open source"}
@@ -139,7 +141,14 @@ function ProviderCard({
         </div>
       ) : null}
 
-      {!loading && !outcome ? (
+      {!loading && !selected ? (
+        <div className="empty-state">
+          <p>Not selected for this run.</p>
+          <span>Turn on {name} above to include it.</span>
+        </div>
+      ) : null}
+
+      {!loading && selected && !outcome ? (
         <div className="empty-state">
           <p>Results will appear here.</p>
           <span>
@@ -233,6 +242,9 @@ function ProviderCard({
 export function ComparisonWorkbench() {
   const [text, setText] = useState(SAMPLE_TEXT);
   const [comparison, setComparison] = useState<ComparisonResponse | null>(null);
+  const [selectedProviders, setSelectedProviders] = useState<
+    Record<ProviderId, boolean>
+  >({ limina: false, presidio: true });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -240,18 +252,22 @@ export function ComparisonWorkbench() {
   async function runComparison(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmedText = text.trim();
-    if (!trimmedText || loading) {
+    const providers = providerIds.filter(
+      (provider) => selectedProviders[provider],
+    );
+    if (!trimmedText || providers.length === 0 || loading) {
       return;
     }
 
     setLoading(true);
     setError(null);
+    setComparison(null);
 
     try {
       const response = await fetch("/api/compare", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: trimmedText }),
+        body: JSON.stringify({ text: trimmedText, providers }),
       });
       const payload: unknown = await response.json();
 
@@ -282,19 +298,45 @@ export function ComparisonWorkbench() {
     }
   }
 
+  function toggleProvider(provider: ProviderId) {
+    setSelectedProviders((current) => ({
+      ...current,
+      [provider]: !current[provider],
+    }));
+  }
+
+  const hasSelectedProvider = providerIds.some(
+    (provider) => selectedProviders[provider],
+  );
+
   return (
     <div className="workbench">
       <form ref={formRef} className="input-panel" onSubmit={runComparison}>
         <div className="input-heading">
           <div>
             <label htmlFor="comparison-text">Text to compare</label>
-            <p>Use synthetic data; the same text is sent to both providers.</p>
+            <p>Use synthetic data and choose which providers receive it.</p>
           </div>
           <span aria-live="polite">
             {text.length.toLocaleString("en-CA")} /{" "}
             {MAX_TEXT_LENGTH.toLocaleString("en-CA")}
           </span>
         </div>
+
+        <fieldset className="provider-selectors">
+          <legend>Providers</legend>
+          {providerIds.map((provider) => (
+            <label className="provider-option" key={provider}>
+              <input
+                type="checkbox"
+                checked={selectedProviders[provider]}
+                disabled={loading}
+                onChange={() => toggleProvider(provider)}
+              />
+              <span>{providerNames[provider]}</span>
+            </label>
+          ))}
+        </fieldset>
 
         <textarea
           id="comparison-text"
@@ -326,7 +368,7 @@ export function ComparisonWorkbench() {
           <button
             className="primary-button"
             type="submit"
-            disabled={!text.trim() || loading}
+            disabled={!text.trim() || !hasSelectedProvider || loading}
           >
             {loading ? "Comparing…" : "Compare redaction"}
             <span aria-hidden="true">→</span>
@@ -348,12 +390,14 @@ export function ComparisonWorkbench() {
         <ProviderCard
           provider="limina"
           outcome={comparison?.results.limina ?? null}
-          loading={loading}
+          loading={loading && selectedProviders.limina}
+          selected={selectedProviders.limina}
         />
         <ProviderCard
           provider="presidio"
           outcome={comparison?.results.presidio ?? null}
-          loading={loading}
+          loading={loading && selectedProviders.presidio}
+          selected={selectedProviders.presidio}
         />
       </section>
 

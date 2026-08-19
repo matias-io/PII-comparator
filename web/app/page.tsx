@@ -10,7 +10,7 @@ export default function HomePage() {
           </span>
           <span>PII Compare</span>
         </a>
-        <span className="header-note">Evaluation workspace</span>
+        <span className="header-note">Evaluation</span>
       </header>
 
       <div id="top" className="page-shell">

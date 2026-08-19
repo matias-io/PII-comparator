@@ -49,10 +49,7 @@ export type ProviderOutcome = ProviderSuccess | ProviderFailure;
 export interface ComparisonResponse {
   inputLength: number;
   completedAt: string;
-  results: {
-    limina: ProviderOutcome;
-    presidio: ProviderOutcome;
-  };
+  results: Partial<Record<ProviderId, ProviderOutcome>>;
 }
 
 export interface RequestFailure {
@@ -87,7 +84,10 @@ export function isComparisonResponse(value: unknown): value is ComparisonRespons
   return (
     typeof value.inputLength === "number" &&
     typeof value.completedAt === "string" &&
-    isProviderOutcome(value.results.limina) &&
-    isProviderOutcome(value.results.presidio)
+    (value.results.limina === undefined ||
+      isProviderOutcome(value.results.limina)) &&
+    (value.results.presidio === undefined ||
+      isProviderOutcome(value.results.presidio)) &&
+    (value.results.limina !== undefined || value.results.presidio !== undefined)
   );
 }

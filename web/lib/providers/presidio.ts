@@ -14,10 +14,14 @@ import {
 
 const DEFAULT_ANALYZER_URL = "http://127.0.0.1:5002";
 const DEFAULT_ANONYMIZER_URL = "http://127.0.0.1:5001";
+const isDevelopmentLive =
+  process.env.NEXT_PUBLIC_ENVIRONMENT_LABEL === "development-live";
 
 const baseDetails: ProviderDetails = {
   api: "POST /analyze → POST /anonymize",
-  deployment: "Native Python · private Vercel Service",
+  deployment: isDevelopmentLive
+    ? "Native Python · private Vercel Service"
+    : "Official Presidio containers · local Docker Compose",
   model: "spaCy en_core_web_lg · English",
   operation: "Analyze + typed placeholder replacement",
   version: "Presidio 2.2.364",

@@ -13,10 +13,14 @@ import {
 } from "@/lib/providers/shared";
 
 const DEFAULT_BASE_URL = "https://api.getlimina.ai/community/v4";
+const isDevelopmentLive =
+  process.env.NEXT_PUBLIC_ENVIRONMENT_LABEL === "development-live";
 
 const details: ProviderDetails = {
   api: "POST /process/text",
-  deployment: "Limina Community cloud API",
+  deployment: isDevelopmentLive
+    ? "Limina Community cloud API · Vercel BFF"
+    : "Limina Community cloud API · local Next.js BFF",
   model: "Limina entity detection · high automatic accuracy",
   operation: "Detect + marker replacement",
   version: "API v4.4.1",
