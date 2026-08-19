@@ -12,8 +12,19 @@ import {
   type ProviderOutcome,
 } from "@/lib/contracts";
 
-const SAMPLE_TEXT =
-  "Dr. Maya Chen emailed alex.morgan@example.com about patient Jordan Lee (DOB 1988-04-12). Call 416-555-0138 or send records to 120 University Ave, Toronto, ON M5H 2Y4.";
+const SAMPLE_TEXT = `SYNTHETIC TEST RECORD. NOT A REAL PERSON.
+
+Patient Evelyn Maya Hart, also known as Evie Hart, was born January 14, 1987 in Halifax, Nova Scotia. Her medical record number is MRN-884291, Ontario health card is 1234-567-890-AB, U.S. SSN is 078-05-1120, Canadian SIN is 046 454 286, ITIN is 912-70-1234, passport is C01X00T47, and driver's licence is D1234-56789-01234.
+
+Evelyn lives at 451 Example Street, Apartment 7B, Ottawa, Ontario K1A 0B1. Her personal email is evelyn.hart@example.com, work email is e.hart@northstar.example, mobile number is +1 613-555-0199, home number is 613-555-0142, and fax is +1 613-555-0108. Her emergency contact is Noah Hart at noah.hart@example.net or 343-555-0175.
+
+She works for Northstar Biomedical Research Ltd. as employee NSB-10482. Payroll lists bank routing number 021000021 and account 000123456789. The billing file contains Visa test card 4111 1111 1111 1111, expiry 09/30, security code 123, and IBAN GB82 WEST 1234 5698 7654 32.
+
+The patient portal username is ehart87. The last sign-in came from IPv4 address 192.0.2.44, IPv6 address 2001:db8::42, and device MAC address 00:00:5E:00:53:AF. The record link is https://records.example.org/patient/MRN-884291?visit=V-2048.
+
+Clinical notes state blood type O negative, asthma, a penicillin allergy, and a prescription for salbutamol 100 mcg. Dr. Luis Romero, medical licence CPSO-123456, scheduled a follow-up for September 18, 2026 at 2:35 p.m. at Riverside Family Clinic, 85 Sample Avenue, Ottawa. Insurance policy number is POL-CA-7782401 and claim number is CLM-2026-004981.
+
+Her vehicle is a blue 2019 sedan with VIN 1M8GDM9AXKP042788 and Ontario plate TEST-417. Case worker Priya Nair wrote: "Send the discharge summary to Evelyn, copy Noah, and reference case HSW-90817 in the subject line."`;
 
 const providerNames: Record<ProviderId, string> = {
   limina: "Limina",
