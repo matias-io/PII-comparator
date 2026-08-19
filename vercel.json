@@ -8,27 +8,22 @@
       "bindings": [
         {
           "type": "service",
-          "service": "presidio_analyzer",
+          "service": "presidio",
           "format": "url",
           "env": "PRESIDIO_ANALYZER_URL"
         },
         {
           "type": "service",
-          "service": "presidio_anonymizer",
+          "service": "presidio",
           "format": "url",
           "env": "PRESIDIO_ANONYMIZER_URL"
         }
       ]
     },
-    "presidio_analyzer": {
-      "root": "services/presidio-analyzer/",
-      "runtime": "container",
-      "entrypoint": "Dockerfile.vercel"
-    },
-    "presidio_anonymizer": {
-      "root": "services/presidio-anonymizer/",
-      "runtime": "container",
-      "entrypoint": "Dockerfile.vercel"
+    "presidio": {
+      "root": "services/presidio-vercel/",
+      "framework": "fastapi",
+      "entrypoint": "main:app"
     }
   },
   "rewrites": [

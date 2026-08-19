@@ -17,7 +17,7 @@ const DEFAULT_ANONYMIZER_URL = "http://127.0.0.1:5001";
 
 const baseDetails: ProviderDetails = {
   api: "POST /analyze → POST /anonymize",
-  deployment: "Official containers · private Vercel Services",
+  deployment: "Native Python · private Vercel Service",
   model: "spaCy en_core_web_lg · English",
   operation: "Analyze + typed placeholder replacement",
   version: "Presidio 2.2.364",
