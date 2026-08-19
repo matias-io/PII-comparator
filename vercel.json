@@ -22,6 +22,7 @@
     "presidio_analyzer": {
       "root": "services/presidio-analyzer/",
       "runtime": "container",
+      "memory": 2048,
       "entrypoint": "Dockerfile.vercel"
     },
     "presidio_anonymizer": {
