@@ -115,7 +115,9 @@ function ProviderCard({
         <div>
           <div className="provider-label">
             <span className="provider-dot" aria-hidden="true" />
-            {provider === "limina" ? "Managed API" : "Open source"}
+            {provider === "limina"
+              ? "Managed API | Can run locally (Licensed)"
+              : "Open source"}
           </div>
           <h2 id={`${provider}-title`}>{name}</h2>
         </div>
